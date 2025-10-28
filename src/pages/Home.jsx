@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import ExploreMenu from "../components/ExploreMenu/Exploremenu.jsx";
+import ExploreMenu from "../components/ExploreMenu/ExploreMenu.jsx";
 import './Home.css'
 import FoodDisplay from '../components/FoodDisplay/FoodDisplay.jsx'
 
