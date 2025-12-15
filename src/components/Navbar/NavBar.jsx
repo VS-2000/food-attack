@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { assets } from '../../assets/frontend_assets/assets';
-
-export default function Navbar({ dark, setDark, setShowLogin }) {
+export default function Navbar({ dark, setDark, isAuthenticated, setIsAuthenticated }) {
     const [menuOpen, setMenuOpen] = useState(false);
-
     const cartCount = 0;
-
+    const handleLogout = () => {
+        localStorage.removeItem("isAuthenticated");
+        setIsAuthenticated(false);
+    };
     return (
-        <nav className="bg-black shadow-sm fixed top-0 left-0 w-full z-50">
+        <nav className="bg-white dark:bg-black shadow-sm fixed top-0 left-0 w-full z-50 transition-colors duration-300">
             <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+
+                {/* Logo + Title */}
                 <div className="flex items-center gap-2">
                     <Link to="/">
                         <img
@@ -22,7 +25,7 @@ export default function Navbar({ dark, setDark, setShowLogin }) {
                         Food Attack
                     </span>
                 </div>
-
+                {/* Desktop Menu */}
                 <div className="hidden md:flex navbar-menu gap-6 text-[16px] font-medium">
                     <NavLink
                         to="/"
@@ -49,49 +52,54 @@ export default function Navbar({ dark, setDark, setShowLogin }) {
                         Contact
                     </NavLink>
                 </div>
-
+                {/* Right Side Buttons */}
                 <div className="navbar-right hidden md:flex items-center gap-4">
-                    <img
-                        src={assets.search_icon}
-                        alt="Search"
-                        className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform"
-                    />
-                    <Link to="/cart" className="relative">
-                        <img src={assets.basket_icon} alt="Cart" className="w-5 h-5" />
-                        {cartCount > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-[#f15a29] text-white text-[10px] px-1 rounded-full">
-                                {cartCount}
-                            </span>
-                        )}
-                    </Link>
-
-                    <button
-                        onClick={() => setDark(!dark)}
-                        className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-[#fff4f2] transition"
-                        title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-                    >
-                        {dark ? '☀️' : '🌙'}
-                    </button>
-
-                    <button
-                        onClick={() => setShowLogin(true)}
-                        className="px-3 py-1.5 bg-black text-yellow-500 rounded-md hover:bg-orange-500 transition"
-                    >
-                        Sign In
-                    </button>
+                    {isAuthenticated && (
+                        <>
+                            <img
+                                src={assets.search_icon}
+                                alt="Search"
+                                className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform"
+                            />
+                            <Link to="/cart" className="relative">
+                                <img src={assets.basket_icon} alt="Cart" className="w-5 h-5" />
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-[#f15a29] text-white text-[10px] px-1 rounded-full">
+                                        {cartCount}
+                                    </span>
+                                )}
+                            </Link>
+                            <button
+                                onClick={() => setDark(!dark)}
+                                className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-[#fff4f2] transition"
+                                title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                            >
+                                {dark ? '☀️' : '🌙'}
+                            </button>
+                            {/* 🔥 Logout Button */}
+                            <button
+                                onClick={handleLogout}
+                                className="px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+                            >
+                                Logout
+                            </button>
+                        </>
+                    )}
                 </div>
-
-                <button
-                    className="md:hidden flex flex-col justify-center items-center space-y-1"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                >
-                    <span className="w-5 h-0.5 bg-gray-700"></span>
-                    <span className="w-5 h-0.5 bg-gray-700"></span>
-                    <span className="w-5 h-0.5 bg-gray-700"></span>
-                </button>
+                {/* Mobile Hamburger */}
+                {isAuthenticated && (
+                    <button
+                        className="md:hidden flex flex-col justify-center items-center space-y-1"
+                        onClick={() => setMenuOpen(!menuOpen)}
+                    >
+                        <span className="w-5 h-0.5 bg-gray-700"></span>
+                        <span className="w-5 h-0.5 bg-gray-700"></span>
+                        <span className="w-5 h-0.5 bg-gray-700"></span>
+                    </button>
+                )}
             </div>
-
-            {menuOpen && (
+            {/* Mobile Menu */}
+            {menuOpen && isAuthenticated && (
                 <div className="md:hidden bg-white border-t border-gray-200 py-3 px-4 space-y-2 shadow-sm">
                     <NavLink
                         to="/"
@@ -114,7 +122,6 @@ export default function Navbar({ dark, setDark, setShowLogin }) {
                     >
                         Contact
                     </NavLink>
-
                     <div className="flex items-center justify-between pt-3 border-t border-gray-200">
                         <img src={assets.search_icon} alt="Search" className="w-4 h-4" />
                         <button
@@ -135,15 +142,15 @@ export default function Navbar({ dark, setDark, setShowLogin }) {
                             )}
                         </Link>
                     </div>
-
+                    {/* Logout button in mobile menu */}
                     <button
                         onClick={() => {
-                            setShowLogin(true);
+                            handleLogout();
                             setMenuOpen(false);
                         }}
-                        className="w-full mt-3 text-sm py-1.5 bg-[#f15a29] text-white rounded-md hover:bg-orange-500 transition"
+                        className="w-full mt-3 text-sm py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
                     >
-                        Sign In
+                        Logout
                     </button>
                 </div>
             )}

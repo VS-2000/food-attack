@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import "./LoginPopup.css";
 import { FaTimes } from "react-icons/fa";
 
-export default function LoginPopup({ setShowLogin, setShowSignup }) {
+export default function LoginPopup({
+  setShowLogin,
+  setShowSignup,
+  setIsAuthenticated, // ✅ added
+}) {
   const [formData, setFormData] = useState({
     emailOrPhone: "",
     password: "",
@@ -14,18 +18,28 @@ export default function LoginPopup({ setShowLogin, setShowSignup }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Basic frontend-only validation
     if (formData.emailOrPhone.trim() && formData.password.trim()) {
-      alert("Login successful (demo)");
+      // 🔥 Save login state (no backend needed)
+      localStorage.setItem("isAuthenticated", "true");
+
+      // 🔥 Update App.js state
+      setIsAuthenticated(true);
+
+      // Close popup
       setShowLogin(false);
+
+      alert("Login successful (demo)");
     }
   };
 
   return (
-    <div className="login-popup-overlay" onClick={() => setShowLogin(false)}>
-      <div
-        className="login-popup-card"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div
+      className="login-popup-overlay"
+      onClick={() => setShowLogin(false)}
+    >
+      <div className="login-popup-card" onClick={(e) => e.stopPropagation()}>
         <button
           className="close-btn"
           onClick={() => setShowLogin(false)}
